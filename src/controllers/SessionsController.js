@@ -5,8 +5,8 @@ const authConfig = require("../configs/auth");
 const AppError = require("../utils/AppError");
 
 class SessionsController {
-  async create(request, response) {
-    const { email, password } = request.body;
+  async create(req, res) {
+    const { email, password } = req.body;
 
     const user = await knex("users").where({ email }).first();
 
@@ -27,7 +27,7 @@ class SessionsController {
       expiresIn
     });
 
-    response.cookie("token", token, {
+    res.cookie("token", token, {
       httpOnly: true,
       sameSite: "none",
       secure: true,
@@ -36,7 +36,7 @@ class SessionsController {
 
     delete user.password
 
-    response.status(201).json({ user });
+    res.status(201).json({ user });
   }
 }
 
