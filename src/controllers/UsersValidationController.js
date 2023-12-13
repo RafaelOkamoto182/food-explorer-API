@@ -8,8 +8,8 @@ objeto vazio e, quando clicar em atualizar, ele vai entrar no sistema.
 isso acontece por causa do useEffect que chega o local storage la no front end
 */
 class UsersValidationController {
-  async index(request, response) {
-    const { user } = request;
+  async index(req, res) {
+    const { user } = req;
 
     const checkUserExists = await knex("users").where({ id: user.id });
 
@@ -17,7 +17,7 @@ class UsersValidationController {
       throw new AppError("Unauthorized", 401);
     }
 
-    return response.status(200).json();
+    return res.status(200).json();
   }
 }
 

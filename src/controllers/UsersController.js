@@ -3,8 +3,8 @@ const { hash } = require("bcryptjs");
 const AppError = require("../utils/AppError");
 
 class UsersController {
-  async create(request, response) {
-    const { name, email, password } = request.body;
+  async create(req, res) {
+    const { name, email, password } = req.body;
 
     const checkUserExists = await knex("users").where({ email });
 
@@ -16,7 +16,7 @@ class UsersController {
 
     await knex("users").insert({ name, email, password: hashedPassword });
 
-    return response.status(201).json();
+    return res.status(201).json();
   }
 }
 
