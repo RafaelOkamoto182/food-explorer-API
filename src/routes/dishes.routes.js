@@ -11,5 +11,6 @@ const dishesRoutes = Router()
 
 dishesRoutes.post("/", upload.single("dish_picture"), dishesController.create);
 dishesRoutes.get("/", dishesController.get)
+dishesRoutes.delete("/:id", dishesController.delete)
 
 module.exports = dishesRoutes
