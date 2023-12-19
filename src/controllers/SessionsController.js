@@ -8,6 +8,10 @@ class SessionsController {
   async create(req, res) {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      throw new AppError("Email and password fields must not be empty")
+    }
+
     const user = await knex("users").where({ email }).first();
 
     if (!user) {
@@ -34,9 +38,7 @@ class SessionsController {
       maxAge: 900000
     })
 
-    delete user.password
-
-    res.status(201).json({ user });
+    res.status(201).json();
   }
 }
 
