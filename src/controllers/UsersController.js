@@ -6,10 +6,14 @@ class UsersController {
   async create(req, res) {
     const { name, email, password } = req.body;
 
+    if (!name || !email || !password) {
+      throw new AppError("Name, email and password fields must not be empty")
+    }
+
     const checkUserExists = await knex("users").where({ email });
 
     if (checkUserExists.length > 0) {
-      throw new AppError("Email already in use.");
+      throw new AppError("Email already in use");
     }
 
     const hashedPassword = await hash(password, 8);
