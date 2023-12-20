@@ -6,16 +6,16 @@ class DishesController {
     async create(req, res) {
 
         const dishPictureName = req.file.filename
-        const { name, description, price } = req.body
+        const { name, description, price, category } = req.body
 
         const diskStorage = new DiskStorage
 
         try {
             const fileName = await diskStorage.saveFile(dishPictureName)
 
-            await knex("dishes").insert({ name, description, price, pictureUrl: fileName })
+            await knex("dishes").insert({ name, description, price, category, pictureUrl: fileName })
 
-            return res.status(201).json({ name, description, price, fileName })
+            return res.status(201).json({ name, description, price, category, fileName })
 
         } catch (e) {
             return e.message
@@ -26,7 +26,7 @@ class DishesController {
 
         try {
             const dishes = await knex("dishes")
-                .select(['dishes.id', 'dishes.name', 'dishes.description', 'dishes.pictureUrl', 'dishes.price'])
+                .select(['dishes.id', 'dishes.name', 'dishes.description', 'dishes.pictureUrl', 'dishes.price', 'dishes.category'])
 
             return res.json(dishes)
 
