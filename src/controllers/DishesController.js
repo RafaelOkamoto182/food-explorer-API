@@ -35,6 +35,21 @@ class DishesController {
         }
     }
 
+    async getById(req, res) {
+        const { id } = req.params
+
+        const dish = await knex("dishes").where({ id }).first()
+        const ingredients = await knex("ingredients")
+            .innerJoin("dishes_ingredients", "dishes_ingredients.id", "ingredients.id")
+            .where("dish.id", id)
+
+        return res.json({
+            ...dish,
+            ingredients
+        })
+
+    }
+
     async delete(req, res) {
         const { id } = req.params
         try {

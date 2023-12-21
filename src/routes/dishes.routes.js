@@ -10,6 +10,7 @@ const dishesController = new DishesController()
 const dishesRoutes = Router()
 
 dishesRoutes.post("/", upload.single("dish_picture"), dishesController.create);
+dishesRoutes.get("/:id", dishesController.getById)
 dishesRoutes.get("/", dishesController.get)
 dishesRoutes.delete("/:id", dishesController.delete)
 
