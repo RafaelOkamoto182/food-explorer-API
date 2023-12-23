@@ -37,12 +37,20 @@ class DishesController {
 
     async getById(req, res) {
         const { id } = req.params
-
+        console.log(id)
         const dish = await knex("dishes").where({ id }).first()
-        const ingredients = await knex("ingredients")
-            .innerJoin("dishes_ingredients", "dishes_ingredients.id", "ingredients.id")
-            .where("dish.id", id)
 
+        if (!dish) {
+            throw new AppError('The dish with the given id could not be found')
+        }
+
+        const ingredients = await knex('ingredients')
+            .innerJoin('dishes_ingredients', 'ingredients.id', 'dishes_ingredients.ingredient_id')
+            .where('dish_id', id)
+        //await knex("dishes_ingredients").join("ingredients", "dish_id", "id")
+
+        console.log(dish)
+        console.log(ingredients)
         return res.json({
             ...dish,
             ingredients
