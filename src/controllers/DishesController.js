@@ -47,10 +47,7 @@ class DishesController {
         const ingredients = await knex('ingredients')
             .innerJoin('dishes_ingredients', 'ingredients.id', 'dishes_ingredients.ingredient_id')
             .where('dish_id', id)
-        //await knex("dishes_ingredients").join("ingredients", "dish_id", "id")
 
-        console.log(dish)
-        console.log(ingredients)
         return res.json({
             ...dish,
             ingredients
