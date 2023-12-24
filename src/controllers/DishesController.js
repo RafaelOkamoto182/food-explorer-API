@@ -44,7 +44,7 @@ class DishesController {
             throw new AppError('The dish with the given id could not be found')
         }
 
-        const ingredients = await knex('ingredients')
+        const ingredients = await knex.select('ingredients.*').from('ingredients')
             .innerJoin('dishes_ingredients', 'ingredients.id', 'dishes_ingredients.ingredient_id')
             .where('dish_id', id)
 
