@@ -95,29 +95,39 @@ class DishesController {
                 return res.status(e.statusCode).json(res.send(e));
             }
 
-            return e
+            return res.send(e)
         }
     }
 
     async update(req, res) {
         const { dish_id } = req.params
-        //const newPictureName = req.file.filename
-        //const { newName, newCategory, newIngredients, newPrice, newDescription } = req.body
 
-        try {
-            //if(!dish_id){...}
+        const { newName, newCategory, newDescription, newIngredients, newPrice } = req.body
+        console.log(req.body)
+        /*  if (newPictureName) {
+             console.log("veio pra foto")
+         } */
 
-            const dish = await knex('dishes').where('id', dish_id).first()
-            const ingredients = await knex.select('ingredients.*').from('ingredients')
-                .innerJoin('dishes_ingredients', 'ingredients.id', 'dishes_ingredients.ingredient_id')
-                .where('dish_id', dish_id)
+        const dish = await knex('dishes').where('id', dish_id).first()
 
+        const ingredients = await knex.select('ingredients.*').from('ingredients')
+            .innerJoin('dishes_ingredients', 'ingredients.id', 'dishes_ingredients.ingredient_id')
+            .where('dish_id', dish_id)
 
-            return res.json({ ...dish, ingredients })
-        } catch (e) {
-            console.log(e)
-            return res.send(e)
+        const dishWithNewName = await knex('dishes').where('name', newName).first()
+
+        if (dishWithNewName && dishWithNewName.id !== dish_id) {
+            throw new AppError("There's already a dish with this name")
         }
+
+        dish.name = newName ?? dish.name
+        dish.category = newCategory ?? dish.category
+        dish.description = newDescription ?? dish.description
+        dish.price = newPrice ?? dish.price
+
+
+        return res.json({ ...dish, ingredients })
+
 
     }
 }
