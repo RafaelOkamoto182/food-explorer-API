@@ -99,6 +99,27 @@ class DishesController {
         }
     }
 
+    async update(req, res) {
+        const { dish_id } = req.params
+        //const newPictureName = req.file.filename
+        //const { newName, newCategory, newIngredients, newPrice, newDescription } = req.body
+
+        try {
+            //if(!dish_id){...}
+
+            const dish = await knex('dishes').where('id', dish_id).first()
+            const ingredients = await knex.select('ingredients.*').from('ingredients')
+                .innerJoin('dishes_ingredients', 'ingredients.id', 'dishes_ingredients.ingredient_id')
+                .where('dish_id', dish_id)
+
+
+            return res.json({ ...dish, ingredients })
+        } catch (e) {
+            console.log(e)
+            return res.send(e)
+        }
+
+    }
 }
 
 module.exports = DishesController

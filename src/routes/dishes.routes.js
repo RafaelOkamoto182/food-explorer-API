@@ -19,5 +19,6 @@ dishesRoutes.post("/", verifyUserAuthorization(["admin"]), upload.single("dish_p
 dishesRoutes.get("/:id", dishesController.getById)
 dishesRoutes.get("/", dishesController.get)
 dishesRoutes.delete("/:id", verifyUserAuthorization(["admin"]), dishesController.delete)
+dishesRoutes.put("/:dish_id", dishesController.update)
 
 module.exports = dishesRoutes
