@@ -37,7 +37,7 @@ class DishesController {
 
     async getById(req, res) {
         const { id } = req.params
-        console.log(id)
+
         const dish = await knex("dishes").where({ id }).first()
 
         if (!dish) {
@@ -57,13 +57,27 @@ class DishesController {
 
     async delete(req, res) {
         const { id } = req.params
+
         try {
+            const dish = await knex.select("pictureUrl").from("dishes").where({ id }).first()
+
+            if (!dish) {
+                throw new AppError("Dish not found")
+            }
+
+            const diskStorage = new DiskStorage
+            await diskStorage.deleteFile(dish.pictureUrl)
+
             await knex("dishes").where({ id }).delete()
 
             return res.json()
 
         } catch (e) {
-            return e.message
+            if (e instanceof AppError) {
+                return res.status(e.statusCode).json(e.message);
+            }
+
+            return e
         }
     }
 
