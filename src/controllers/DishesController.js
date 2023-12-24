@@ -23,10 +23,28 @@ class DishesController {
     }
 
     async get(req, res) {
+        const { search_bar } = req.query
+        let dishes = []
 
         try {
-            const dishes = await knex("dishes")
-                .select(['dishes.id', 'dishes.name', 'dishes.description', 'dishes.pictureUrl', 'dishes.price', 'dishes.category'])
+
+            if (search_bar) {
+                dishes = await knex('dishes')
+                    .select(
+                        'dishes.id as dish_id',
+                        'dishes.name as dish_name',
+                        'ingredients.id as ingredient_id',
+                        'ingredients.name as ingredient_name',
+                        'pictureUrl'
+                    )
+                    .join('dishes_ingredients', 'dishes.id', 'dishes_ingredients.dish_id')
+                    .join('ingredients', 'dishes_ingredients.ingredient_id', 'ingredients.id')
+                    .whereLike('ingredient_name', `%${search_bar}%`)
+                    .orWhereLike('dish_name', `%${search_bar}%`)
+                    .groupBy('dish_name');
+            } else {
+                dishes = await knex('dishes')
+            }
 
             return res.json(dishes)
 
