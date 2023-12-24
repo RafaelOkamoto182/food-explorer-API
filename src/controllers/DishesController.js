@@ -18,7 +18,7 @@ class DishesController {
             return res.status(201).json({ name, description, price, category, fileName })
 
         } catch (e) {
-            return e.message
+            return res.send(e)
         }
     }
 
@@ -31,7 +31,7 @@ class DishesController {
             return res.json(dishes)
 
         } catch (e) {
-            return e.message
+            return res.send(e)
         }
     }
 
@@ -74,7 +74,7 @@ class DishesController {
 
         } catch (e) {
             if (e instanceof AppError) {
-                return res.status(e.statusCode).json(e.message);
+                return res.status(e.statusCode).json(res.send(e));
             }
 
             return e

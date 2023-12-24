@@ -11,7 +11,7 @@ class IngredientsController {
             return res.json()
 
         } catch (e) {
-            return e.message
+            return res.send(e)
         }
     }
 
@@ -22,7 +22,7 @@ class IngredientsController {
             await knex("ingredients").where({ id }).delete()
             return res.json()
         } catch (e) {
-            return e.message
+            return res.send(e)
         }
     }
 

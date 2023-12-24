@@ -14,7 +14,7 @@ class DiskStorage {
             return fileName
 
         } catch (e) {
-            return e.message
+            return res.send(e)
         }
     }
 
@@ -26,7 +26,7 @@ class DiskStorage {
 
             await fs.promises.unlink(filePath)
         } catch (e) {
-            return e.message
+            return res.send(e)
         }
     }
 }
