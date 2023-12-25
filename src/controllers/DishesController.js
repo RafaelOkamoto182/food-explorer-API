@@ -127,8 +127,7 @@ class DishesController {
 
 
         return res.json({ ...dish, ingredients })
-
-
+        s
     }
 }
 

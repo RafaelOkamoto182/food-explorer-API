@@ -3,12 +3,18 @@ const knex = require("../database/knex")
 class IngredientsController {
 
     async create(req, res) {
-        const { name } = req.body
+        const { ingredients } = req.body
+
+        const ingredientsToInsert = ingredients.map(ingredient => {
+            return {
+                name: ingredient
+            }
+        })
 
         try {
 
-            await knex("ingredients").insert({ name })
-            return res.json()
+            //await knex("ingredients").insert({ name })
+            return res.json(ingredientsToInsert)
 
         } catch (e) {
             return res.send(e)
