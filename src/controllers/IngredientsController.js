@@ -21,6 +21,26 @@ class IngredientsController {
         }
     }
 
+    async get(req, res) {
+        const { search_bar } = req.query
+        let ingredients = []
+
+        try {
+
+            if (search_bar) {
+                ingredients = await knex('ingredients')
+                    .whereLike('name', `%${search_bar}%`)
+            } else {
+                ingredients = await knex('ingredients')
+            }
+
+            return res.json(ingredients)
+
+        } catch (e) {
+            return res.send(e)
+        }
+    }
+
     async delete(req, res) {
         const { id } = req.params
 

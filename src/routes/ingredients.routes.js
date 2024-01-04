@@ -12,6 +12,7 @@ ingredientsRoutes.use(ensureAuthenticated)
 ingredientsRoutes.use(verifyUserAuthorization(["admin"]))
 
 ingredientsRoutes.post("/", ingredientsController.create)
+ingredientsRoutes.get("/", ingredientsController.get)
 ingredientsRoutes.delete("/:id", ingredientsController.delete)
 
 module.exports = ingredientsRoutes
