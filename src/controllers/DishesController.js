@@ -6,16 +6,42 @@ class DishesController {
     async create(req, res) {
 
         const dishPictureName = req.file.filename
-        const { name, description, price, category } = req.body
+        const { name, description, price, category, ingredientNames } = req.body
+        const ingredientNamesArray = ingredientNames.split(",")
+        console.log(ingredientNamesArray)
 
         const diskStorage = new DiskStorage
 
         try {
-            const fileName = await diskStorage.saveFile(dishPictureName)
+            const dishPictureFileName = await diskStorage.saveFile(dishPictureName)
 
-            await knex("dishes").insert({ name, description, price, category, pictureUrl: fileName })
+            knex.transaction(async (trx) => {
+                try {
+                    const [newlyAddedDishId] = await trx('dishes').insert({ name, description, price, category, pictureUrl: dishPictureFileName })
 
-            return res.status(201).json({ name, description, price, category, fileName })
+
+                    //this is an array of objects [{id:}, {id:}]
+                    const ingredientIds = await trx('ingredients').insert(
+                        ingredientNamesArray.map(ingredient_name => ({ name: ingredient_name })), 'id'
+                    )
+
+                    const linkRecords = ingredientIds.map(ingredientId => ({
+                        dish_id: newlyAddedDishId,
+                        ingredient_id: ingredientId.id
+                    }))
+
+                    await trx('dishes_ingredients').insert(linkRecords)
+
+                    await trx.commit();
+
+                    return res.status(201).json({ name, description, price, category, dishPictureFileName })
+
+                } catch (error) {
+                    await trx.rollback();
+                    return { success: false, error }
+                }
+
+            })
 
         } catch (e) {
             return res.send(e)
